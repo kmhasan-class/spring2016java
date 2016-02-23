@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,19 +45,33 @@ public class FXMLDocumentController implements Initializable {
             substring()
             */
             int aCount = 0;
+            ArrayList<String> words = new ArrayList<>();
             while (true) {
                 line = input.readLine();
-                if (line == null)
+                if (line == null || line.length() == 0)
                     break;
                 line = line.toLowerCase();
+                int marker1 = 0;
+                int marker2 = 0;
                 for (int i = 0; i < line.length(); i++) {
-                    if (line.charAt(i) == 'a')
-                        aCount++;
+                    if (line.charAt(i) == ' ' || line.charAt(i) == ',') {
+                        marker2 = i;
+                        String word = line.substring(marker1, marker2);
+                        boolean found = false;
+                        for (int j = 0; j < words.size(); j++)
+                            if (words.get(j).equals(word))
+                                found = true;
+                        if (!found)
+                            words.add(word);
+                        //System.err.printf("Found word: [%s]\n", word);
+                        marker1 = marker2 + 1;
+                    }
                 }
-                System.out.printf("Substring from 2 to 7 [%s]\n", line.substring(2, 7));
             }
             label.setText("# of as " + aCount);
             System.out.printf("# of as %d\n", aCount);
+            for (int i = 0; i < words.size(); i++)
+                System.out.printf("[%s]\n", words.get(i));
         } catch (FileNotFoundException fnfe) {
             System.err.printf("Could not locate the file\n");
         } catch (IOException ioe) {
