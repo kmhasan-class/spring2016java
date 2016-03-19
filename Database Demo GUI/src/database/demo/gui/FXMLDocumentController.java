@@ -11,12 +11,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -39,20 +41,42 @@ public class FXMLDocumentController implements Initializable {
     private String DB_USER = "java";
     private String DB_PASS = "spring2016";
     
+    private Connection connection;
+    private Statement statement;
+    
+    private ArrayList<Distributor> distributors;
+    private int currentIndex;
+    @FXML
+    private Button previousButton;
+    @FXML
+    private Button nextButton;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        String query = "SELECT * FROM distributor";
+        distributors = new ArrayList<>();
+        currentIndex = 0;
         
+        String query = "SELECT * FROM distributor";
+
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            Statement statement = connection.createStatement();
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             
             while (resultSet.next()) {
                 int distributorId = resultSet.getInt("distributorId");
                 String name = resultSet.getString("name");
+                String address = resultSet.getString("address");
+                String phone = resultSet.getString("phone");
+                
+                Distributor distributor = new Distributor(distributorId, name, address, phone);
                 System.out.printf("%d %s\n", distributorId, name);
+                
+                distributors.add(distributor);
             }
+            
+            display();
+            previousButton.setDisable(true);
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -76,12 +100,53 @@ public class FXMLDocumentController implements Initializable {
         String query = "INSERT INTO distributor VALUES(" + distributorId + ", '" + name + "', '" + address + "', '" + phone + "')";
         
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            Statement statement = connection.createStatement();
+//            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+//            Statement statement = connection.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void display() {
+        int id = distributors.get(currentIndex).getId();
+        String name = distributors.get(currentIndex).getName();
+        String address = distributors.get(currentIndex).getAddress();
+        String phone = distributors.get(currentIndex).getPhone();
+        
+        nameField.setText(name);
+        distributorIdField.setText(id + "");
+        addressArea.setText(address);
+        phoneField.setText(phone);
+    }
+    
+    @FXML
+    private void handlePreviousAction(ActionEvent event) {
+        currentIndex--;
+        display();
+    }
+
+    @FXML
+    private void handleNextAction(ActionEvent event) {
+        // ADD CODE TO STOP THE CRASHES
+        currentIndex++;
+        previousButton.setDisable(false);
+        display();
+    }
+
+    @FXML
+    private void handleSearchAction(ActionEvent event) {
+        int id = Integer.parseInt(distributorIdField.getText());
+        
+        for (int i = 0; i < distributors.size(); i++)
+            if (distributors.get(i).getId() == id) {
+                currentIndex = i;
+                display();
+                break;
+            }
+        
+        // ADD CODE TO REPORT ERROR WHEN DISTRIBUTOR IS NOT FOUND
+        // You can add a label at the bottom to report any status
     }
     
 }
