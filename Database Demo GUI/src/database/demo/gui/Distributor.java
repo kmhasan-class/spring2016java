@@ -38,5 +38,8 @@ public class Distributor {
         return phone;
     }
     
-    
+    @Override
+    public String toString() {
+        return id + " - " +  name;
+    }
 }

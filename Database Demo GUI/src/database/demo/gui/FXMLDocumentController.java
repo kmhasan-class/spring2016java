@@ -15,11 +15,15 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -44,20 +48,28 @@ public class FXMLDocumentController implements Initializable {
     private Connection connection;
     private Statement statement;
     
-    private ArrayList<Distributor> distributors;
+    private ObservableList<Distributor> distributors;
     private int currentIndex;
     @FXML
     private Button previousButton;
     @FXML
     private Button nextButton;
+    @FXML
+    private ListView<Distributor> distributorList;
+    @FXML
+    private ComboBox<Distributor> distributorCombo;
+    
+    // Read up on MVC architecture
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        distributors = new ArrayList<>();
+        distributors = FXCollections.observableArrayList();
+        distributorList.setItems(distributors);
+        distributorCombo.setItems(distributors);
         currentIndex = 0;
         
         String query = "SELECT * FROM distributor";
-
+       
         try {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
             statement = connection.createStatement();
@@ -103,6 +115,8 @@ public class FXMLDocumentController implements Initializable {
 //            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 //            Statement statement = connection.createStatement();
             statement.executeUpdate(query);
+            Distributor distributor = new Distributor(distributorId, name, address, phone);
+            distributors.add(distributor);
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
