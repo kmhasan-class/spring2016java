@@ -16,9 +16,15 @@ import javafx.stage.Stage;
  * @author kmhasan
  */
 public class DatabaseDemoGUI extends Application {
+    private static Stage mainStage;
+
+    public static Stage getMainStage() {
+        return mainStage;
+    }
     
     @Override
     public void start(Stage stage) throws Exception {
+        mainStage = stage;
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
