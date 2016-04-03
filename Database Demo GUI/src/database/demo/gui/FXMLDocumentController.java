@@ -135,6 +135,13 @@ public class FXMLDocumentController implements Initializable {
             Distributor distributor = new Distributor(distributorId, name, address, phone);
             distributors.add(distributor);
         } catch (SQLException ex) {
+//            Alert alert = new Alert(AlertType.INFORMATION);
+//            alert.setTitle("Information Dialog");
+//            alert.setHeaderText("Look, an Information Dialog");
+//            alert.setContentText("I have a great message for you!");
+//
+//            alert.showAndWait();
+            
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
