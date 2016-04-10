@@ -5,7 +5,9 @@
  */
 package chat.client.demo;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -23,8 +25,14 @@ public class ChatClientDemo {
         try {
             Socket socket = new Socket(hostname, portNumber);
             OutputStream out = socket.getOutputStream();
-            String message = "ওহে বিশ্ব";
-            out.write(message.getBytes());
+            String message = "";
+            BufferedReader stdin = new BufferedReader
+                (new InputStreamReader(System.in));
+            while (true) {
+                message = stdin.readLine();
+                out.write(message.getBytes());
+                out.flush();
+            }
         } catch (IOException ex) {
             Logger.getLogger(ChatClientDemo.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -36,5 +44,5 @@ public class ChatClientDemo {
     public static void main(String[] args) {
         new ChatClientDemo();
     }
-    
+
 }
