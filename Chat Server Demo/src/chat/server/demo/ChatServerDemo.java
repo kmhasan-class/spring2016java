@@ -29,8 +29,14 @@ public class ChatServerDemo {
                 System.out.printf("Connected with %s\n", socket.getInetAddress());
                 InputStream in = socket.getInputStream();
                 byte[] message = new byte[1000];
-                int length = in.read(message);
-                System.out.printf("Client sent: [%s]\n", new String(message).substring(0, length));
+                while (true) {
+                    int length = in.read(message);
+                    if (length >= 0) {
+                        System.out.printf("Client sent: [%s]\n", new String(message).substring(0, length));
+                    } else {
+                        break;
+                    }
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(ChatServerDemo.class.getName()).log(Level.SEVERE, null, ex);
