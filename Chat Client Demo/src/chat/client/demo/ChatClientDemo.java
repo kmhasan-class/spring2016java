@@ -26,6 +26,14 @@ public class ChatClientDemo {
             Socket socket = new Socket(hostname, portNumber);
             OutputStream out = socket.getOutputStream();
             String message = "";
+            
+            ThreadedClientReader reader = new ThreadedClientReader(socket);
+            reader.start();
+            
+            String name = "Monirul Hasan";
+            out.write(name.getBytes());
+            out.flush();
+            
             BufferedReader stdin = new BufferedReader
                 (new InputStreamReader(System.in));
             while (true) {
