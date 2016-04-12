@@ -30,8 +30,10 @@ public class ThreadedClientReader extends Thread {
             in = socket.getInputStream();
             byte[] messageBytes = new byte[1000];
             while (true) {
-                in.read(messageBytes);
-                String message = new String(messageBytes).trim();
+                int length = in.read(messageBytes);
+                if (length < 0)
+                    break;
+                String message = new String(messageBytes).substring(0, length);
                 System.out.printf("Server sent [%s]\n", message);
             }
         } catch (IOException ex) {
