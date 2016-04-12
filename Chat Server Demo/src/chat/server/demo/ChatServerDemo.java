@@ -27,16 +27,9 @@ public class ChatServerDemo {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.printf("Connected with %s\n", socket.getInetAddress());
-                InputStream in = socket.getInputStream();
-                byte[] message = new byte[1000];
-                while (true) {
-                    int length = in.read(message);
-                    if (length >= 0) {
-                        System.out.printf("Client sent: [%s]\n", new String(message).substring(0, length));
-                    } else {
-                        break;
-                    }
-                }
+
+                ThreadedServer threadedServer = new ThreadedServer(socket);
+                threadedServer.start();
             }
         } catch (IOException ex) {
             Logger.getLogger(ChatServerDemo.class.getName()).log(Level.SEVERE, null, ex);
