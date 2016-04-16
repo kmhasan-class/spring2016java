@@ -14,8 +14,10 @@ public class PiCalculator {
      */
     public static void main(String[] args) {
         SingleThreadedPiCalculator singleThreaded = new SingleThreadedPiCalculator();
-        for (int terms = 1; terms <= 10; terms++)
-            System.out.printf("Terms: %2d Pi: %.10f\n", terms, singleThreaded.getPi(terms));
+        MultiThreadedPiCalculator multiThreaded = new MultiThreadedPiCalculator();
+
+        System.out.printf("SingleThreaded Terms: %6d Pi: %.10f\n", 121, singleThreaded.getPi(121));
+        System.out.printf("MultiThreaded  Terms: %6d Pi: %.10f\n", 121, multiThreaded.getPi(121));
     }
-    
+
 }
