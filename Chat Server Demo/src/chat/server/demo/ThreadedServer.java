@@ -21,9 +21,11 @@ import java.util.logging.Logger;
 public class ThreadedServer extends Thread {
 
     private Socket socket;
-
-    public ThreadedServer(Socket socket) {
+    private ChatServerDemo mainServer;
+    
+    public ThreadedServer(Socket socket, ChatServerDemo mainServer) {
         this.socket = socket;
+        this.mainServer = mainServer;
     }
 
     @Override
@@ -39,6 +41,7 @@ public class ThreadedServer extends Thread {
             String name;
             in.read(message);
             name = new String(message).trim();
+            mainServer.broadcast(name + " has logged in");
             
             while (true) {
                 int length = in.read(message);
@@ -46,10 +49,13 @@ public class ThreadedServer extends Thread {
                     Date date = new Date();
                     String inputMessage = new String(message).substring(0, length);
                     System.out.printf("[%s][%s]: %s\n", formatter.format(date), name, inputMessage);
-                    String outputMessage = inputMessage.toUpperCase();
-                    out.write(outputMessage.getBytes());
-                    out.flush();
+                    String outputMessage = String.format("[%s][%s]: %s", formatter.format(date), name, inputMessage);
+                    // MODIFY THE CALL TO INCLUDE socket
+                    mainServer.broadcast(outputMessage);
                 } else {
+                    mainServer.broadcast(name + " has logged out");
+                    // CALL APPROPRIATE METHOD IN mainServer TO
+                    // REMOVE THIS SOCKET
                     break;
                 }
             }
