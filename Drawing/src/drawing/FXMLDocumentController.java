@@ -33,7 +33,6 @@ public class FXMLDocumentController implements Initializable {
         gc.setFill(Color.PINK);
         gc.fillOval(width / 2 - radius, height / 2 - radius, radius * 2, radius * 2);
         gc.strokeOval(width / 2 - radius * 2, height / 2 - radius, radius * 4, radius * 2);
-        gc.strokeL
     }    
     
 }
