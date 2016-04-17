@@ -52,6 +52,9 @@ public class FXMLDocumentController implements Initializable {
             String name = "Monirul Hasan";
             out.write(name.getBytes());
             out.flush();
+            
+            ThreadedClientReader reader = new ThreadedClientReader(socket, this);
+            reader.start();
         } catch (IOException ex) {
             Logger.getLogger(ChatClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -63,9 +66,13 @@ public class FXMLDocumentController implements Initializable {
         String message = messageField.getText();
         try {
             out.write(message.getBytes());
+            messageField.setText("");
         } catch (IOException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public void addMessage(String message) {
+        chatLogArea.appendText(message + "\n");
+    }
 }
