@@ -54,7 +54,7 @@ public class FXMLDocumentController implements Initializable {
             out.flush();
             
             ThreadedClientReader reader = new ThreadedClientReader(socket, this);
-            reader.start();
+            //reader.start();
         } catch (IOException ex) {
             Logger.getLogger(ChatClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
