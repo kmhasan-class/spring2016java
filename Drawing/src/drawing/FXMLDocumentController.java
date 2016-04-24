@@ -6,6 +6,7 @@
 package drawing;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +35,9 @@ public class FXMLDocumentController implements Initializable {
     private double dy = radius + 1;
     private int signX = +1;
     private int signY = +1;
-    
+
+    ArrayList<Ball> balls;
+
     private void drawBall(double centerX, double centerY, double radius) {
         gc.setFill(Color.RED);
         gc.fillOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
@@ -45,24 +48,52 @@ public class FXMLDocumentController implements Initializable {
         gc = canvas.getGraphicsContext2D();
         double width = canvas.getWidth();
         double height = canvas.getHeight();
-        
+
+        balls = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Ball ball = new Ball();
+            ball.setCenterX(radius + Math.random() * (width - radius * 2));
+            ball.setCenterY(radius + Math.random() * (height - radius * 2));
+            ball.setDx(Math.random() * 2);
+            ball.setDy(Math.random() * 2);
+            balls.add(ball);
+        }
+
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(5),
-            event -> {
-                gc.setFill(Color.YELLOW);
-                gc.fillRect(0, 0, width, height);
-                drawBall(dx, dy, radius);
-                dx = dx + 5 * signX;
-                dy = dy + 1 * signY;
-                if (dx + radius >= width || dx - radius <= 0)
-                    signX = -signX;
-                if (dy + radius >= height || dy - radius <= 0)
-                    signY = -signY;
-            });
+                event -> {
+                    gc.setFill(Color.YELLOW);
+                    gc.fillRect(0, 0, width, height);
+
+                    for (int i = 0; i < balls.size(); i++) {
+                        balls.get(i).drawBall(gc);
+                        balls.get(i).update(width, height);
+                        
+                        for (int j = 0; j < balls.size(); j++) {
+                            if (i != j) {
+                                Ball a = balls.get(i);
+                                Ball b = balls.get(j);
+                                if (a.isColliding(b)) {
+                                    double tx = a.getDx();
+                                    double ty = a.getDy();
+                                    a.setDx(b.getDx());
+                                    a.setDy(b.getDy());
+                                    b.setDx(tx);
+                                    b.setDy(ty);
+                                    // ADD CODE HERE TO
+                                    // INTERCHANGE THE SIGNX/Y
+                                    // VALUES BETWEEN BALL
+                                    // a AND BALL b
+                                }
+                            }
+                        }
+                    }
+                });
+        
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.playFromStart();
-        
+
     }
 
 }
