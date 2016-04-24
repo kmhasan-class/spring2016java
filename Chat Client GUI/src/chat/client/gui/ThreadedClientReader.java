@@ -34,7 +34,7 @@ public class ThreadedClientReader {
             messageBytes = new byte[1000];
 
             Timeline timeline = new Timeline();
-            KeyFrame keyFrame = new KeyFrame(Duration.seconds(1),
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(10),
                     event -> {
                         while (true) {
                             try {
